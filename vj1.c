@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 10
+#define MAX 50
 #define max_br_bod 10
 
 typedef struct student{
@@ -14,7 +14,8 @@ int main()
     FILE *fp=NULL;
     int i;
     stud *st=NULL;
-    int br=0;
+    int br=1;
+    char c;
     int rl=0;
     
     fp=fopen("dat1.txt","r");
@@ -24,16 +25,19 @@ int main()
         return 1;
     }
 
-    fscanf(fp,"%d",&br);
+    do{
+        c =fgetc(fp);
+        if( c=='\n') br++;
 
-    st=(stud*)malloc(br*sizeof(stud));
+    }while(c != EOF);
+    
 
     for(i=0;i<br;i++){
         fscanf(fp,"%s %s %d",st[i].ime, st[i].prez, &st[i].bodovi );
     }
 
     for(i=0;i<br;i++){
-        rl=st[i].bodovi/max_br_bod*100;
+        rl=(st[i].bodovi*100)/max_br_bod;
         printf("%s %s %d %d",st[i].ime, st[i].prez, st[i].bodovi ,rl );
     }
 
