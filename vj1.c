@@ -11,13 +11,13 @@ typedef struct student{
 
 int main()
 {
-    FILE *fp;
+    FILE *fp=NULL;
     int i;
-    stud *st;
+    stud *st=NULL;
     int br=0;
     int rl=0;
     
-    fp=fopen("dat1.rtf","r");
+    fp=fopen("dat1.txt","r");
 
     if(fp == NULL){
         printf("Ne moze se otvoriti datoteka ");
