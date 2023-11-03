@@ -40,8 +40,50 @@ void ispis(pozicija p){
 
 pozicija unosIza(pozicija p){
     while(NULL != p->Next)
-        p =p->Next;
+        p=p->Next;
         return p;
+}
+
+pozicija pronadi(pozicija p){
+    char pr[50];
+
+    printf("Unesi prezime osobe da je pronades");
+    scanf("%s", pr);
+
+    while(p != NULL && strcmpi(p->surname, pr)!=0)
+            p=p->Next;
+
+            return p;
+}
+
+pozicija pronIspred(pozicija p){
+    char pr[50];
+
+    if(NULL == p->Next)
+        p=NULL;
+    else{
+    printf("Unesi prezime osobe da je pronades");
+    scanf("%s", pr);
+
+    while(strcmpi(p->Next->surname, pr)!=0 && p->Next->Next != NULL);
+            p=p->Next;
+
+    if(strcmpi(p->Next->surname, pr)!=0)
+        p=NULL;        
+    }
+    return p;
+}
+void izbrisi(pozicija p){
+    pozicija ispred;
+    ispred=pronIspred(p);
+    if(NULL !=ispred){
+        p=ispred->Next;
+        ispred->Next =p->Next;
+        printf("Osoba je obrissana");
+        free(p);
+    }
+    else 
+        printf("Greska pri brisanju");
 }
 
 int main()
@@ -52,7 +94,7 @@ int main()
 
 
         char odabir = 0;
-        printf("Unesi a-za unos elemenata na pocetak\n\t,b-za ispis niza\n\t,c-za unos elemenata na kraj\n");
+        printf("Unesi a-za unos elemenata na pocetak\n\t,b-za ispis niza\n\t,c-za unos elemenata na kraj\n\t,d-za pronalazak prezimena\n\te-za brisanje elementa iz niza\n\t");
         scanf("%s",&odabir);
 
         switch(odabir){
@@ -68,7 +110,20 @@ int main()
             case 'C':
               p=unosIza(&Head);
                 unosIspred(p);
-                break;    
+                break;  
+            case 'd':
+            case 'D':
+                p=pronadi(Head.Next);
+                if(NULL == p)
+                    printf("Greska u pretrazi");
+                else 
+                    printf("%s %s %d",p->name,p->surname,p->yearofbirth);     
+                break;
+            case 'e':
+            case 'E':
+                izbrisi(&Head);
+                break;
+
             default:
                 printf("Greska");
         }
