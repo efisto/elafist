@@ -50,7 +50,7 @@ pozicija pronadi(pozicija p){
     printf("Unesi prezime osobe da je pronades");
     scanf("%s", pr);
 
-    while(p != NULL && strcmpi(p->surname, pr)!=0)
+    while(p != NULL && strcmp(p->surname, pr) != 0)
             p=p->Next;
 
             return p;
@@ -65,10 +65,10 @@ pozicija pronIspred(pozicija p){
     printf("Unesi prezime osobe da je pronades");
     scanf("%s", pr);
 
-    while(strcmpi(p->Next->surname, pr)!=0 && p->Next->Next != NULL);
+    while(strcmp(p->Next->surname, pr)!=0 && p->Next->Next != NULL);
             p=p->Next;
 
-    if(strcmpi(p->Next->surname, pr)!=0)
+    if(strcmp(p->Next->surname, pr)!=0)
         p=NULL;        
     }
     return p;
