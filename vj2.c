@@ -1,25 +1,78 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+
+struct osoba;
+
+typedef struct osoba *pozicija;
 
 struct osoba{
     int yearofbirth;
     char surname[50];
     char name[50];
+    pozicija Next;
 
-    struct osoba next;
 };
+
+
+void unosIspred(pozicija p){
+    pozicija q;
+
+        q=(pozicija)malloc(sizeof(struct osoba));
+        printf("Unesite podatke o osobi");
+        scanf("%s %s %d", q->name, q->surname, q->yearofbirth);
+
+        q->Next= p->Next;
+        p->Next= q;
+}
+
+void ispis(pozicija p){
+    if(NULL ==p)
+        printf("Pogreska\n");
+    else{
+        printf("Ispis liste:\n");
+        while(p !=NULL){
+            printf("%s %s %d\n\t",p->name,p->surname,p->yearofbirth);
+            p=p->Next;
+        }
+    }
+}
+
+pozicija unosIza(pozicija p){
+    while(NULL != p->Next)
+        p =p->Next;
+        return p;
+}
 
 int main()
 {
-    struct osoba head={.next = NULL,.name =NULL};
+    struct osoba Head, *p;
+    pozicija temp;
+    Head.Next=NULL;
 
-        int odabir = 0;
 
-        scanf("%d",&odabir);
+        char odabir = 0;
+        printf("Unesi a-za unos elemenata na pocetak\n\t,b-za ispis niza\n\t,c-za unos elemenata na kraj\n");
+        scanf("%s",&odabir);
 
         switch(odabir){
-            case A:
+            case 'A':
+            case 'a':
+                unosIspred(&Head);
+                break;
+            case 'b':
+            case 'B':
+                ispis(Head.Next);
+                break;
+            case 'c':
+            case 'C':
+              p=unosIza(&Head);
+                unosIspred(p);
+                break;    
+            default:
+                printf("Greska");
         }
 
-
-}
+ 
+    }
+ 
