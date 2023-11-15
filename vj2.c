@@ -1,133 +1,129 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct osoba;
-
-typedef struct osoba *pozicija;
-
-struct osoba{
-    int yearofbirth;
-    char surname[50];
-    char name[50];
-    pozicija Next;
-
-};
+/*2. Definirati strukturu osoba (ime, prezime, godina rođenja) i napisati program koji:
+A. dinamički dodaje novi element na početak liste,
+B. ispisuje listu,
+C. dinamički dodaje novi element na kraj liste,
+D. pronalazi element u listi (po prezimenu),
+E. briše određeni element iz liste,
+U zadatku se ne smiju koristiti globalne varijable*/
 
 
-void unosIspred(pozicija p){
-    pozicija q;
+#define NAMESIZE 50
 
-        q=(pozicija)malloc(sizeof(struct osoba));
-        printf("Unesite podatke o osobi");
-        scanf("%s %s %d", q->name, q->surname, q->yearofbirth);
+typedef struct Person
+{
+	char name[NAMESIZE];
+	char surname[NAMESIZE];
+	int age;
+	struct Person* next;
+} Person;
 
-        q->Next= p->Next;
-        p->Next= q;
+void Ispisliste(Person* head)
+{
+	while (head != NULL)
+	{
+		IspisClana(head);
+		head = head->next;
+	}
 }
 
-void ispis(pozicija p){
-    if(NULL ==p)
-        printf("Pogreska\n");
-    else{
-        printf("Ispis liste:\n");
-        while(p !=NULL){
-            printf("%s %s %d\n\t",p->name,p->surname,p->yearofbirth);
-            p=p->Next;
-        }
-    }
+void IspisClana(Person* head)
+{
+	printf("%s %s %d\n", head->name, head->surname, head->age);
 }
 
-pozicija unosIza(pozicija p){
-    while(NULL != p->Next)
-        p=p->Next;
-        return p;
+Person* UnosElementa()
+{
+	Person* novaosoba = (Person*)malloc(sizeof(Person));
+	if (novaosoba == NULL)
+		return NULL;
+
+	printf("unes ime:");     scanf("%s", novaosoba->name);
+	printf("unes prezime:"); scanf("%s", novaosoba->surname);
+	printf("unes godine:");  scanf("%d", &novaosoba->age);
+	novaosoba->next = NULL;
+	return novaosoba;
 }
 
-pozicija pronadi(pozicija p){
-    char pr[50];
+Person* DodajNaPocetak(Person* head)
+{
+	Person* novaosoba = UnosElementa();
+	novaosoba->next = head;
+	head = novaosoba;
 
-    printf("Unesi prezime osobe da je pronades");
-    scanf("%s", pr);
-
-    while(p != NULL && strcmp(p->surname, pr) != 0)
-            p=p->Next;
-
-            return p;
+	return head;
 }
 
-pozicija pronIspred(pozicija p){
-    char pr[50];
+Person* DodajNaKraj(Person* head) {
+	Person* novaosoba = UnosElementa();
 
-    if(NULL == p->Next)
-        p=NULL;
-    else{
-    printf("Unesi prezime osobe da je pronades");
-    scanf("%s", pr);
+	if (head == NULL) {
+		return novaosoba;
+	}
 
-    while(strcmp(p->Next->surname, pr)!=0 && p->Next->Next != NULL);
-            p=p->Next;
-
-    if(strcmp(p->Next->surname, pr)!=0)
-        p=NULL;        
-    }
-    return p;
+	Person* current = head;
+	while (current->next != NULL) {
+		current = current->next;
+	}
+	current->next = novaosoba;
+	return head;
 }
-void izbrisi(pozicija p){
-    pozicija ispred;
-    ispred=pronIspred(p);
-    if(NULL !=ispred){
-        p=ispred->Next;
-        ispred->Next =p->Next;
-        printf("Osoba je obrissana");
-        free(p);
-    }
-    else 
-        printf("Greska pri brisanju");
+
+void PronadiPoPrezimenu(Person* head)
+{
+	char wantedSurname[NAMESIZE];
+	puts("unesi prezime zeljenog clana\n");
+	scanf("%s", wantedSurname);
+
+	while (head != NULL)
+	{
+		if (strcmp(wantedSurname, head->surname) == 0)
+		{
+			IspisClana(head);
+			return;
+		}
+		head = head->next;
+	}
+	puts("clan nije pronaden na listi");
+}
+
+Person* IzbrisiListu(Person* head)
+{
+	while (head != NULL)
+	{
+		Person* temp = head;
+		head = head->next;
+		free(temp);
+	}
+
+	return NULL;
 }
 
 int main()
 {
-    struct osoba Head, *p;
-    pozicija temp;
-    Head.Next=NULL;
+	int odabir = 0;
+	Person* head = NULL;
 
+	puts("unesi broj kojim zelis izvrsit radnju;\n1. ispisi listu\n2. dodaj element na pocetak liste\n3. dodaj element na kraj liste\n4. pretrazi listu po prezimen\n5. izbrisi cijelu listu");
+	scanf("%d", &odabir);
 
-        char odabir = 0;
-        printf("Unesi a-za unos elemenata na pocetak\n\t,b-za ispis niza\n\t,c-za unos elemenata na kraj\n\t,d-za pronalazak prezimena\n\te-za brisanje elementa iz niza\n\t");
-        scanf("%s",&odabir);
-
-        switch(odabir){
-            case 'A':
-            case 'a':
-                unosIspred(&Head);
-                break;
-            case 'b':
-            case 'B':
-                ispis(Head.Next);
-                break;
-            case 'c':
-            case 'C':
-              p=unosIza(&Head);
-                unosIspred(p);
-                break;  
-            case 'd':
-            case 'D':
-                p=pronadi(Head.Next);
-                if(NULL == p)
-                    printf("Greska u pretrazi");
-                else 
-                    printf("%s %s %d",p->name,p->surname,p->yearofbirth);     
-                break;
-            case 'e':
-            case 'E':
-                izbrisi(&Head);
-                break;
-
-            default:
-                printf("Greska");
-        }
-
- 
-    }
- 
+	while (odabir >= 1 && odabir <= 5)
+	{
+		switch (odabir)
+		{
+		case 1: Ispisliste(head); break;
+		case 2: head = DodajNaPocetak(head); break;
+		case 3: head = DodajNaKraj(head); break;
+		case 4: PronadiPoPrezimenu(head); break;
+		case 5: head = IzbrisiListu(head); break;
+		default:
+			puts("opcija nije u izboru");
+			break;
+		}
+		puts("Unesite novi broj za izvršenje određene radnje (ili bilo koji drugi broj za izlaz):\n");
+		scanf("%d", &odabir);
+	}
+}
